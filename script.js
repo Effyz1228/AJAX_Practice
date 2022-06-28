@@ -25,29 +25,66 @@ const renderCountry = function (data, className = '') {
 };
 
 //old way of doing AJAX
-function getCountryAndNeighbour(country) {
-  const req = new XMLHttpRequest();
-  req.open('GET', `https://restcountries.com/v3.1/name/${country}`);
-  req.send();
+// function getCountryAndNeighbour(country) {
+//   const req = new XMLHttpRequest();
+//   req.open('GET', `https://restcountries.com/v3.1/name/${country}`);
+//   req.send();
 
-  req.addEventListener('load', function () {
-    const [data] = JSON.parse(req.responseText);
-    console.log(data);
-    renderCountry(data);
-    if (!data.borders) return;
-    const neighbour = data.borders?.[0];
+//   req.addEventListener('load', function () {
+//     const [data] = JSON.parse(req.responseText);
+//     console.log(data);
+//     renderCountry(data);
+//     if (!data.borders) return;
+//     const neighbour = data.borders?.[0];
 
-    const req2 = new XMLHttpRequest();
-    req2.open('GET', `https://restcountries.com/v3.1/alpha/${neighbour}`);
-    req2.send();
-    req2.addEventListener('load', function () {
-      const [data] = JSON.parse(req2.responseText);
-      renderCountry(data, 'neighbour');
-    });
+//     const req2 = new XMLHttpRequest();
+//     req2.open('GET', `https://restcountries.com/v3.1/alpha/${neighbour}`);
+//     req2.send();
+//     req2.addEventListener('load', function () {
+//       const [data] = JSON.parse(req2.responseText);
+//       renderCountry(data, 'neighbour');
+//     });
+//   });
+// }
+
+// getCountryAndNeighbour('britain');
+
+//Using Promise
+function renderError(err) {
+  countriesContainer.style.opacity = 1;
+  countriesContainer.insertAdjacentText('beforeend', err);
+}
+
+function getJSON(url, errorMsg) {
+  return fetch(url).then(res => {
+    if (!res.ok) {
+      throw new Error(`!!!❌❌❌ ${errorMsg}, ${res.status}`);
+    }
+    return res.json();
   });
 }
 
-getCountryAndNeighbour('britain');
+function getCountryAndNeighbour(country) {
+  getJSON(`https://restcountries.com/v3.1/name/${country}`, 'country not found')
+    .then(data => {
+      renderCountry(data[0]);
+      if (!data[0].borders) throw new Error('no neighbour');
+      const neighbour = data[0].borders?.[0];
+      return getJSON(
+        `https://restcountries.com/v3.1/alpha/${neighbour}`,
+        'country not found'
+      );
+    })
+    .then(data2 => renderCountry(data2[0], 'neighbour'))
+    .catch(err => {
+      renderError(`something went wrong.....,${err.message}`);
+      console.log(err.message, 'something went wrong.....');
+    });
+}
+
+btn.addEventListener('click', () => {
+  getCountryAndNeighbour('japan');
+});
 
 ///////////////////////////////////////
 
