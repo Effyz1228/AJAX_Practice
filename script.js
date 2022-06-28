@@ -83,8 +83,31 @@ function getCountryAndNeighbour(country) {
 }
 
 btn.addEventListener('click', () => {
-  getCountryAndNeighbour('japan');
+  getCountryAndNeighbour('holland');
 });
+
+//challenge1
+const whereAmI = function (lat, lng) {
+  return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    .then(res => {
+      if (!res.ok) throw new Error('slow down!');
+      return res.json();
+    })
+    .then(data => {
+      console.log(`You are in ${data.city},${data.country},`);
+      return fetch(`https://restcountries.com/v3.1/name/${data.country}`);
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Country not found!');
+      return res.json();
+    })
+    .then(data => renderCountry(data[0]))
+    .catch(err => renderError(err));
+};
+
+whereAmI(52.508, 13.381);
+whereAmI(19.037, 72.873);
+whereAmI(-33.933, 18.474);
 
 ///////////////////////////////////////
 
