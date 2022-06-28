@@ -105,9 +105,67 @@ const whereAmI = function (lat, lng) {
     .catch(err => renderError(err));
 };
 
-whereAmI(52.508, 13.381);
-whereAmI(19.037, 72.873);
-whereAmI(-33.933, 18.474);
+// whereAmI(52.508, 13.381);
+// whereAmI(19.037, 72.873);
+// whereAmI(-33.933, 18.474);
+
+//259 build promise
+// const lotteryPromise = new Promise((resolve, reject) => {
+//   console.log('Your destiny depends on this!');
+//   setTimeout(() => {
+//     if (Math.random() >= 0.5) resolve('You are rich now!');
+//     else reject(new Error('You have no soul!'));
+//   }, 1000);
+//   console.log('Please be seated!');
+// });
+
+// lotteryPromise
+//   .then(res => {
+//     console.log(res);
+//   })
+//   .catch(err => console.error(err));
+
+// //promisfying settimeout
+// const wait = function (sec) {
+//   return new Promise(resolve => {
+//     setTimeout(() => {
+//       resolve(`You have waited ${sec} seconds`);
+//     }, sec * 1000);
+//   });
+// };
+
+// wait(2)
+//   .then(res => {
+//     console.log(res);
+//     return wait(3);
+//   })
+//   .then(res => {
+//     console.log(res);
+//     return wait(4);
+//   })
+//   .then(res => {
+//     console.log(res);
+//     return wait(5);
+//   })
+//   .then(res => console.log(res));
+
+// //resolve right away
+// Promise.resolve(5 / 100).then(res => console.log(res));
+// Promise.reject('Yh 5986$%#$').catch(err => console.error(err));
+
+//promisfying getGeoLocation
+const getPosition = function () {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+getPosition().then(res => {
+  const { latitude: lat, longitude: lng } = res.coords;
+  whereAmI(lat, lng);
+});
+
+//challenge 2
 
 ///////////////////////////////////////
 
