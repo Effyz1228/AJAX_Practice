@@ -207,6 +207,51 @@ const wait = function (sec) {
 //   });
 // };
 
+//challenge 3
+const images = document.querySelector('.images');
+const createImage = function (url) {
+  return new Promise((resolve, reject) => {
+    const img = document.createElement('img');
+    img.src = url;
+    img.addEventListener('load', () => {
+      images.append(img);
+      resolve(img);
+    });
+    img.addEventListener('error', () => {
+      reject(new Error('no photo'));
+    });
+  });
+};
+let currImg;
+
+const getImg = async function () {
+  try {
+    let img = await createImage('img/img-1.jpg');
+    await wait(2);
+    img.style.display = 'none';
+    img = await createImage('img/img-2.jpg');
+    await wait(2);
+    img.style.display = 'none';
+  } catch (err) {
+    console.log('no picture');
+  }
+};
+
+const loadAll = async function (imgArr) {
+  try {
+    const imgs = imgArr.map(img => {
+      return createImage(img);
+    });
+    console.log(imgs);
+    const imgsEl = await Promise.all(imgs);
+    console.log(imgsEl);
+    imgsEl.forEach(img => img.classList.add('parallel'));
+  } catch (err) {
+    console.log(err);
+  }
+};
+// getImg();
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
 // const whereAmI = async function () {
 //   try {
 //     const geoRes = await getPosition();
@@ -315,12 +360,12 @@ const race3 = async function (c1, c2, c3) {
       getJSON(`https://restcountries.com/v3.1/name/${c3}`),
       wait(2),
     ]);
-    console.log(winner);
+    console.log(winner[0].name);
   } catch (err) {
     console.log(err);
   }
 };
-race3('germany', 'Koreaa', 'africa');
+// race3('germany', 'Korea', 'africa');
 ///////////////////////////////////////
 
 // function getCountries(country) {
