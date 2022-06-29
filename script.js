@@ -154,19 +154,59 @@ const whereAmI = function (lat, lng) {
 // Promise.reject('Yh 5986$%#$').catch(err => console.error(err));
 
 //promisfying getGeoLocation
-const getPosition = function () {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
+// const getPosition = function () {
+//   return new Promise((resolve, reject) => {
+//     navigator.geolocation.getCurrentPosition(resolve, reject);
+//   });
+// };
+
+// getPosition().then(res => {
+//   const { latitude: lat, longitude: lng } = res.coords;
+//   whereAmI(lat, lng);
+// });
+
+//challenge 2
+const images = document.querySelector('.images');
+let currImg;
+const wait = function (sec) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(`You have waited ${sec} seconds`);
+    }, sec * 1000);
   });
 };
 
-getPosition().then(res => {
-  const { latitude: lat, longitude: lng } = res.coords;
-  whereAmI(lat, lng);
-});
+const createImage = function (url) {
+  return new Promise((resolve, reject) => {
+    const img = document.createElement('img');
+    img.src = url;
+    img.addEventListener('load', () => {
+      images.append(img);
+      resolve(img);
+    });
+    img.addEventListener('error', () => {
+      reject(new Error('no img found!'));
+    });
+  });
+};
 
-//challenge 2
-
+createImage('img/img-1.jpg')
+  .then(res => {
+    currImg = res;
+    return wait(2);
+  })
+  .then(() => {
+    currImg.style.display = 'none';
+    return createImage('img/img-2.jpg');
+  })
+  .then(res => {
+    currImg = res;
+    return wait(2);
+  })
+  .then(() => {
+    currImg.style.display = 'none';
+  })
+  .catch(err => console.error(err));
 ///////////////////////////////////////
 
 // function getCountries(country) {
