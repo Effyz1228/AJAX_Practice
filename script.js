@@ -267,12 +267,60 @@ const get3Countries = async function (c1, c2, c3) {
     data.map(el => {
       console.log(el[0].capital);
     });
-    console.log(data);
   } catch (err) {
     console.log(err);
   }
 };
-get3Countries('usa', 'japan', 'france');
+// get3Countries('usa', 'japan', 'france');
+
+//promise.race
+const race = async function (c1, c2, c3) {
+  try {
+    const winner = await Promise.race([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+      wait(1),
+    ]);
+    console.log(winner[0].name);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// race('germany', 'Korea', 'africa');
+
+//promise.allsettled
+const race2 = async function (c1, c2, c3) {
+  try {
+    const winner = await Promise.allSettled([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+      wait(2),
+    ]);
+    console.log(winner);
+  } catch (err) {
+    console.log(err);
+  }
+};
+// race2('germany', 'Koreaa', 'africa');
+
+//Promise.any
+const race3 = async function (c1, c2, c3) {
+  try {
+    const winner = await Promise.any([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+      wait(2),
+    ]);
+    console.log(winner);
+  } catch (err) {
+    console.log(err);
+  }
+};
+race3('germany', 'Koreaa', 'africa');
 ///////////////////////////////////////
 
 // function getCountries(country) {
